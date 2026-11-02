@@ -1,1 +1,1 @@
-# CN-Mini-project---QOS-traffic-MGMT
+# CN-Mini-project : OS-traffic-MGMT
