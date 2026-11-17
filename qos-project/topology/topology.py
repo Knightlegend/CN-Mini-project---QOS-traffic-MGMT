@@ -49,7 +49,15 @@ def build_network():
         delay="10ms",
         max_queue_size=50
     )
+    info("*** Adding controller\n")
+    net.addController(
+        "c0",
+        controller=RemoteController,
+        ip="127.0.0.1",
+        port=6653
+    )
 
+    
     info("*** Starting network\n")
     net.build()
     net.start()
