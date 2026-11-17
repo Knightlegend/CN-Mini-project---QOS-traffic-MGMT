@@ -9,7 +9,7 @@ from mininet.log import setLogLevel, info
 
 def build_network():
     net = Mininet(
-        controller=None,
+        controller=RemoteController,
         switch=OVSSwitch,
         link=TCLink,
         autoSetMacs=True,
@@ -25,12 +25,13 @@ def build_network():
     s1 = net.addSwitch(
         "s1",
         protocols="OpenFlow13",
-        failMode="standalone"
+        failMode="secure"
     )
     s2 = net.addSwitch(
         "s2",
         protocols="OpenFlow13",
-        failMode="standalone"
+        failMode="secure"
+        
     )
 
     info("*** Connecting h1 and h2 to s1\n")
