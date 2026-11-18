@@ -8,6 +8,34 @@ import argparse
 def start_client(host, port, traffic_class, flow_id, count, rate, payload_size):
 
     client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    controller_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    notification = f"{host},{port}".encode()
+
+    controller_socket.settimeout(2)
+
+    try:
+        print(f"Sending notification to Ryu: {notification.decode()}")
+
+        controller_socket.sendto(notification, (controller_ip, 20001))
+
+        response, address = controller_socket.recvfrom(1024)
+
+        print("Ryu response:", response.decode())
+
+    except socket.timeout:
+        print("No response from Ryu. Check controller connection.")
+        controller_socket.close()
+        client.close()
+        return
+
+    except OSError as error:
+        print("Notification error:", error)
+        controller_socket.close()
+        client.close()
+        return
+
+    controller_socket.close()
 
     payload = b"X" * payload_size
 
@@ -55,6 +83,7 @@ if __name__ == "__main__":
     parser.add_argument("--count", type=int, default=100)
     parser.add_argument("--rate", type=float, default=20)
     parser.add_argument("--payload-size", type=int, default=100)
+    parser.add_argument("--controller-ip",required=True)
 
     args = parser.parse_args()
 
@@ -69,4 +98,5 @@ if __name__ == "__main__":
         args.count,
         args.rate,
         args.payload_size
+        args.controller_ip
     )
